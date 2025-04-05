@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Marketplace - ExIt{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Search bar -->
+    <div class="mb-4">
+        <form action="/search" method="GET">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search items..."
+                    aria-label="Search" aria-describedby="basic-addon2" name="search" value="{{ search_query }}">
+                <button class="btn btn-danger" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+        {% if search_query %}
+            <p class="mt-2 text-muted">Showing results for "{{ search_query }}"</p>
+        {% endif %}
+    </div>
+    
+    <div class="row">
+        <!-- Sidebar for filters -->
+        <div class="col-lg-3 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Filters</h5>
+                </div>
+                <form action="/marketplace" method="GET">
+                    <div class="card-body">
+                        <h6 class="mb-3">Categories</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="electronics" name="categories" value="electronics" {% if 'electronics' in request.args.getlist('categories') %}checked{% endif %}>
+                            <label class="form-check-label" for="electronics">Electronics</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="books" name="categories" value="books" {% if 'books' in request.args.getlist('categories') %}checked{% endif %}>
+                            <label class="form-check-label" for="books">Books</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="furniture" name="categories" value="furniture" {% if 'furniture' in request.args.getlist('categories') %}checked{% endif %}>
+                            <label class="form-check-label" for="furniture">Furniture</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="mensclothing" name="categories" value="mensclothing" {% if 'mensclothing' in request.args.getlist('categories') %}checked{% endif %}>
+                            <label class="form-check-label" for="mensclothing">Men's Clothing</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="womensclothing" name="categories" value="womensclothing" {% if 'womensclothing' in request.args.getlist('categories') %}checked{% endif %}>
+                            <label class="form-check-label" for="womensclothing">Women's Clothing</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="others" name="categories" value="others" {% if 'others' in request.args.getlist('categories') %}checked{% endif %}>
+                            <label class="form-check-label" for="others">Others</label>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="card-body">
+                        <h6 class="mb-3">Price</h6>
+                        <div class="mb-3">
+                            <label for="minPrice" class="form-label">Min Price</label>
+                            <input type="number" class="form-control" id="minPrice" name="min_price" min="0" step="0.01" value="{{ request.args.get('min_price', '') }}" placeholder="$">
+                        </div>
+                        <div class="mb-3">
+                            <label for="maxPrice" class="form-label">Max Price</label>
+                            <input type="number" class="form-control" id="maxPrice" name="max_price" min="0" step="0.01" value="{{ request.args.get('max_price', '') }}" placeholder="$">
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger">Apply Filters</button>
+                            <a href="/marketplace" class="btn btn-outline-secondary">Clear Filters</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main content area -->
+        <div class="col-lg-9">
+            <!-- Items grid -->
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% if items|length == 0 %}
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            {% if search_query %}
+                                No items found matching "{{ search_query }}"
+                            {% else %}
+                                No items available at the moment.
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    {% for item in items %}
+                        <div class="col">
+                            <div class="card h-100 item-card">
+                                <img src="{{ item.image_url }}" class="card-img-top" alt="{{ item.name }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ item.name }}</h5>
+                                    {% if item.category == 'mensclothing' %}
+                                        <p class="card-text text-muted">Men's Clothing</p>
+                                    {% elif item.category == 'womensclothing' %}
+                                        <p class="card-text text-muted">Women's Clothing</p>
+                                    {% elif item.category == 'electronics' %}
+                                        <p class="card-text text-muted">Electronics</p>
+                                    {% elif item.category == 'books' %}
+                                        <p class="card-text text-muted">Books</p>
+                                    {% elif item.category == 'furniture' %}
+                                        <p class="card-text text-muted">Furniture</p>
+                                    {% else %}
+                                        <p class="card-text text-muted">{{ item.category }}</p>
+                                    {% endif %}
+                                    <p class="card-text">${{ "%.2f"|format(item.price) }}</p>
+                                    <a href="#" class="btn btn-danger">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,90 @@
+/* Custom styles for ExIt */
+
+/* General styles */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navigation styles */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Main content styles */
+.masthead {
+    flex: 1;
+}
+
+/* Footer styles */
+.footer {
+    margin-top: auto;
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+}
+
+/* Button styles */
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+/* Form styles */
+.form-control:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Link styles */
+a {
+    color: #dc3545;
+}
+
+a:hover {
+    color: #c82333;
+}
+
+/* Custom utility classes */
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+/* Marketplace styles */
+.card {
+    transition: transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.item-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.form-check-input:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+/* Filter sidebar */
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0,0,0,0.125);
+}
+
+.card-title {
+    color: #212529;
+    font-weight: 600;
+}
