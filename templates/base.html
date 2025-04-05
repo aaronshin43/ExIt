@@ -14,12 +14,14 @@
     <!-- Navigation-->
     <nav class="navbar navbar-light bg-light static-top">
         <div class="container">
-            <a class="navbar-brand" href="/"><img src="/static/images/logo_text_transparent.png" alt="ExIt" width="100"></a>
+            <div class="d-flex align-items-center" style="gap: 10px;">
+                <a class="navbar-brand me-3" href="/"><img src="/static/images/logo_text_transparent.png" alt="ExIt" width="100"></a>
+                <a class="text-danger text-decoration-none fw-bold" href="{{ url_for('marketplace') }}">Marketplace</a>
+            </div>
             <div class="d-flex justify-content-end" style="gap: 10px;">
                 {% block nav_buttons %}
-                <a class="btn btn-danger" href="/marketplace">Marketplace</a>
-                <a class="btn btn-danger" href="#login">Log in</a>
-                <a class="btn btn-danger" href="#register">Register</a>
+                <a class="btn btn-danger" href="{{ url_for('login') }}">Log in</a>
+                <a class="btn btn-danger" href="{{ url_for('register') }}">Register</a>
                 {% endblock %}
             </div>
         </div>
