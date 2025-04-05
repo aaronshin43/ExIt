@@ -3,14 +3,17 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from wtforms import StringField, PasswordField, SubmitField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField, IntegerField
 from wtforms.validators import InputRequired, Length, ValidationError, EqualTo, DataRequired
 from flask_wtf import FlaskForm
 from flask_bcrypt import Bcrypt
+from flask_wtf.file import MultipleFileField
+import os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///exit.db'
 app.config['SECRET_KEY'] = 'thisismysecretkey'
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -24,7 +27,12 @@ class Item(db.Model):
     price = db.Column(db.Float, nullable=False)
     category = db.Column(db.String(20), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    image_url = db.Column(db.String(200), default='/static/images/placeholder.jpg')
+    images = db.relationship('ItemImage', backref='item', lazy=True)
+
+class ItemImage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    item_id = db.Column(db.Integer, db.ForeignKey('item.id'), nullable=False)
+    image_path = db.Column(db.String(200), nullable=False)
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -67,18 +75,18 @@ class LoginForm(FlaskForm):
 
 class ItemForm(FlaskForm):
     name = StringField(validators=[InputRequired(), Length(min=1, max=100)], render_kw=({"placeholder": "Item Name"}))
-    description = StringField(validators=[InputRequired()], render_kw=({"placeholder": "Description"}))
-    price = StringField(validators=[InputRequired()], render_kw=({"placeholder": "Price"}))
+    description = TextAreaField(validators=[InputRequired()], render_kw=({"placeholder": "Description"}))
+    price = IntegerField(validators=[InputRequired()], render_kw=({"placeholder": "Price"}))
     category = SelectField('Category', choices=[
-        ('Electronics', 'Electronics'),
-        ('Books', 'Books'),
-        ('Furniture', 'Furniture'),
-        ('Clothing', 'Clothing'),
-        ('Course Materials', 'Course Materials'),
-        ('Others', 'Others')
+        ('electronics', 'Electronics'),
+        ('books', 'Books'),
+        ('furniture', 'Furniture'),
+        ('mensclothing', 'Men\'s Clothing'),
+        ('womensclothing', 'Women\'s Clothing'),
+        ('others', 'Others')
     ], validators=[DataRequired()])
-    image_url = StringField(render_kw=({"placeholder": "Image URL (optional)"}))
-    submit = SubmitField('List Item')
+    images = MultipleFileField('Images')
+    submit = SubmitField('Upload Item')
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -185,27 +193,47 @@ def logout():
 @app.route('/sell', methods=['GET', 'POST'])
 @login_required
 def sell():
-    if request.method == 'POST':
-        name = request.form.get('name')
-        description = request.form.get('description')
-        price = request.form.get('price')
-        category = request.form.get('category')
-        image_url = request.form.get('image_url')
+    form = ItemForm()  # Create an instance of the form
 
+    if form.validate_on_submit():
         new_item = Item(
-            name=name,
-            description=description,
-            price=price,
-            category=category,
+            name=form.name.data,
+            description=form.description.data,
+            price=form.price.data,
+            category=form.category.data,
             user_id=current_user.id,
-            image_url=image_url
         )
-        
         db.session.add(new_item)
         db.session.commit()
-        flash('Item listed successfully!', 'success')
+
+        # Handle image uploads
+        if form.images.data:
+            for image in form.images.data:
+                if image:
+                    filename = f"{new_item.id}_{image.filename}"
+                    image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    image.save(image_path)
+                    item_image = ItemImage(
+                        item_id=new_item.id,
+                        image_path=filename
+                    )
+                    db.session.add(item_image)
+            db.session.commit()
+            print("Images saved successfully" + filename + " to " + image_path)
+        flash('Item created successfully!', 'success')
         return redirect(url_for('marketplace'))
-    return render_template('sell.html')
+
+    return render_template('sell.html', form=form)
+
+@app.route('/chat')
+@login_required
+def chat():
+    return render_template('chat.html')
+
+@app.route('/item/<int:item_id>')
+def item_detail(item_id):
+    item = Item.query.get_or_404(item_id) 
+    return render_template('itemdetails.html', item=item, images=item.images)
 
 if __name__ == "__main__":
     app.run(debug=True)

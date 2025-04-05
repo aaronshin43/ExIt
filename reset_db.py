@@ -32,48 +32,71 @@ def reset_database():
                 name='iPhone 13 Pro',
                 description='Excellent condition, comes with original box and accessories',
                 price=699.99,
-                category='Electronics',
+                category='electronics',
                 user_id=1,
-                image_url='/static/images/placeholder.jpg'
             ),
             Item(
                 name='Calculus Textbook',
                 description='Calculus: Early Transcendentals, 8th Edition, barely used',
                 price=45.00,
-                category='Books',
+                category='books',
                 user_id=1,
-                image_url='/static/images/placeholder.jpg'
             ),
             Item(
                 name='Desk Chair',
                 description='Ergonomic office chair, adjustable height',
                 price=75.00,
-                category='Furniture',
+                category='furniture',
                 user_id=2,
-                image_url='/static/images/placeholder.jpg'
             ),
             Item(
                 name='Nike Hoodie',
                 description='Black Nike hoodie, size M, like new',
                 price=35.00,
-                category='Mensclothing',
+                category='mensclothing',
                 user_id=2,
-                image_url='/static/images/placeholder.jpg'
             ),
             Item(
                 name='Leather Bag',
                 description='Genuine leather tote bag, perfect condition',
                 price=85.00,
-                category='Womensclothing',
+                category='womensclothing',
                 user_id=1,
-                image_url='/static/images/placeholder.jpg'
+            ),
+                        Item(
+                name='Samsung Galaxy S24',
+                description='Brand new, unopened box, 128GB storage',
+                price=599.99,
+                category='electronics',
+                user_id=2,
+            ),
+            Item(
+                name='MacBook Pro 16"',
+                description='2021 model, M1 Pro chip, 16GB RAM, 512GB SSD',
+                price=1999.99,
+                category='electronics',
+                user_id=1,
+            ),
+            Item(
+                name='Adidas Running Shoes',
+                description='White Adidas running shoes, size 10, lightly used',
+                price=50.00,
+                category='mensclothing',
+                user_id=1,
+            ),
+            Item(
+                name='The Great Gatsby',
+                description='Hardcover edition, classic novel by F. Scott Fitzgerald',
+                price=15.00,
+                category='books',
+                user_id=2,
             )
         ]
         
         # Add items to database
         for item in items:
             db.session.add(item)
-        
+
         # Commit all changes
         db.session.commit()
         print("Database reset successfully!")

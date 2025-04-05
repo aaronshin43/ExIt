@@ -3,5 +3,70 @@
 {% block title %}Sell - ExIt{% endblock %}
 
 {% block content %}
-<div><p>sell here</p></div>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4">Sell Item</h2>
+                    
+                    <!-- Flash Messages -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-dismissible fade show 
+                                    {% if category == 'error' %}
+                                        alert-danger
+                                    {% else %}
+                                        alert-success
+                                    {% endif %}" 
+                                    role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" action="{{ url_for('sell') }}" enctype="multipart/form-data">
+                        {{ form.csrf_token }}
+                        
+                        <div class="mb-3">
+                            {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else "")) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else "")) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.price(class="form-control" + (" is-invalid" if form.price.errors else "")) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.category(class="form-control" + (" is-invalid" if form.category.errors else "")) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.images(class="form-control") }}
+                            <div class="form-text">You can upload multiple images (JPG, PNG, GIF)</div>
+                            {% if form.images.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.images.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-danger") }}
+                            <a href="{{ url_for('home') }}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
