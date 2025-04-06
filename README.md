@@ -52,7 +52,7 @@ We built ExIt using:
 ```bash
 # 1. Clone the repository
 git clone https://github.com/aaronshin43/ExIt.git
-cd your-repo
+cd ExIt
 
 # 2. Create a virtual environment
 python3 -m venv venv
@@ -63,4 +63,7 @@ pip install -r requirements.txt
 
 # 4. Run the application
 python app.py
+
+# 5. (Optional) Reset database with example items
+python reset_db.py
 ```
