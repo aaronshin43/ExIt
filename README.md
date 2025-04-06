@@ -6,7 +6,7 @@
 ### ExIt is a web application designed specifically for Dickinson students and faculties to buy and sell items within our campus community. The application uses Flask for the backend, SQLite for the database, and includes features like user authentication, item search, and item filter.
 **Team:** Aaron Shin
 
-**Submission video:** *Link to video.*  
+**Submission video:** *[Link to video.](https://youtu.be/aM8D2S3nsx4)*  
 > ⏱️ The video should be 5 minutes or less. In the video, you should include the project inspiration, what it does, and a demo showcasing the key features.
 
 > 🎥 The easiest way to make a video here would be to use OBS or Zoom for screen recording. You can upload the video as an unlisted video on YouTube and add the link here.
